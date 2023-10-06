@@ -332,9 +332,9 @@ class panelPlugin:
                         softInfo['ps'].lower().find(get.query) != -1: 
                         tmpList.append(softInfo)
                 softList['list'] = tmpList
-
-        if not softList['list']: 
-            if os.path.exists(lcoalTmp): os.remove(lcoalTmp)
+                softList['pro'] = 1
+        for soft in softList['list']:
+            soft['endtime'] = 0
         return softList
  
     #取提醒标记
