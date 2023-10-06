@@ -31,7 +31,7 @@ fi
 cp   /www/server/panel/BTPanel/static/js/index.js   /www/server/panel/BTPanel/static/js/index.js_$(date +%F).bak
 cp   /www/server/panel/data/plugin.json   /www/server/panel/data/plugin.json_$(date +%F).bak
 cp   /www/server/panel/data/repair.json   /www/server/panel/data/repair.json_$(date +%F).bak
-cp   /www/server/panel/BTPanel/static/bt.js   /www/server/panel/BTPanel/static/bt.js_$(date +%F).bak
+
 
 #去除宝塔面板强制绑定账号
 sed -i "s|if (bind_user == 'True') {|if (bind_user == 'REMOVED') {|g" /www/server/panel/BTPanel/static/js/index.js
@@ -67,18 +67,6 @@ else
     chattr +i /www/server/panel/data/repair.json
 fi
 echo "文件防修改完成."
-
-#解锁Nginx防火墙及网站监控报表
-repair_file="/www/server/panel/class/panelPlugin.py"
-if [ -f ${repair_file} ];then
-    rm /www/server/panel/class/panelPlugin.py
-    cd /www/server/panel/class
-    wget https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/panelPlugin.py
-else
-    cd /www/server/panel/class
-    wget https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/panelPlugin.py
-fi
-echo "解锁Nginx防火墙及网站监控报表."
 
 
 
