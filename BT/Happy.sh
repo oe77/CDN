@@ -33,7 +33,6 @@ cp   /www/server/panel/data/plugin.json   /www/server/panel/data/plugin.json_$(d
 cp   /www/server/panel/data/repair.json   /www/server/panel/data/repair.json_$(date +%F).bak
 cp   /www/server/panel/BTPanel/static/bt.js   /www/server/panel/BTPanel/static/bt.js_$(date +%F).bak
 
-
 #去除宝塔面板强制绑定账号
 sed -i "s|if (bind_user == 'True') {|if (bind_user == 'REMOVED') {|g" /www/server/panel/BTPanel/static/js/index.js
 rm -rf /www/server/panel/data/bind.pl
@@ -69,13 +68,28 @@ else
 fi
 echo "文件防修改完成."
 
+#解锁Nginx防火墙及网站监控报表
+repair_file="/www/server/panel/class/panelPlugin.py"
+if [ -f ${repair_file} ];then
+    rm /www/server/panel/class/panelPlugin.py
+    cd /www/server/panel/class
+    wget https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/panelPlugin.py
+else
+    cd /www/server/panel/class
+    wget https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/panelPlugin.py
+fi
+echo "解锁Nginx防火墙及网站监控报表."
+
+
+
+
 
 Layout_file="/www/server/panel/BTPanel/templates/default/layout.html";
 JS_file="/www/server/panel/BTPanel/static/bt.js";
 if [ `grep -c "<script src=\"/static/bt.js\"></script>" $Layout_file` -eq '0' ];then
 	sed -i '/{% block scripts %} {% endblock %}/a <script src="/static/bt.js"></script>' $Layout_file;
 fi;
-wget -q http://f.cccyun.cc/bt/bt.js -O $JS_file;
+wget -q https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/bt.js -O $JS_file;
 echo "已去除各种计算题与延时等待."
 
 sed -i "/htaccess = self.sitePath+'\/.htaccess'/, /public.ExecShell('chown -R www:www ' + htaccess)/d" /www/server/panel/class/panelSite.py
