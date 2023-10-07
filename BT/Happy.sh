@@ -37,7 +37,7 @@ cp   /www/server/panel/data/repair.json   /www/server/panel/data/repair.json_$(d
 sed -i "s|if (bind_user == 'True') {|if (bind_user == 'REMOVED') {|g" /www/server/panel/BTPanel/static/js/index.js
 rm -rf /www/server/panel/data/bind.pl
 echo "已去除宝塔面板强制绑定账号."
-
+sleep 3
 #1.修改所有付费插件为永不过期 2.修改宝塔标识为pro 3.给plugin.json文件上锁防止自动修复为免费版
 plugin_file="/www/server/panel/data/plugin.json"
 if [ -f ${plugin_file} ];then
@@ -52,7 +52,7 @@ else
     chattr +i /www/server/panel/data/plugin.json
 fi
 echo "plugin.json修改完成."
-
+sleep 3
 #文件防修改
 repair_file="/www/server/panel/data/repair.json"
 if [ -f ${repair_file} ];then
@@ -67,11 +67,7 @@ else
     chattr +i /www/server/panel/data/repair.json
 fi
 echo "文件防修改完成."
-
-
-
-
-
+sleep 3
 Layout_file="/www/server/panel/BTPanel/templates/default/layout.html";
 JS_file="/www/server/panel/BTPanel/static/bt.js";
 if [ `grep -c "<script src=\"/static/bt.js\"></script>" $Layout_file` -eq '0' ];then
