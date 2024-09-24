@@ -224,32 +224,6 @@ disable_recommendations() {
     echo "已关闭活动推荐与在线客服."
 }
 
-
-# 重启服务
-restart_service() {
-    sleep 3
-    /etc/init.d/bt restart
-    sleep 3
-    bt default
-    sleep 2 
-    echo -e "宝塔面板开心结束！"
-}
-
-# 执行所有功能
-remove_binding
-modify_plugin_json
-modify_repair_json
-remove_calculations
-remove_garbage_files
-close_unbound_domain_warning
-close_security_login_prompt
-remove_notifications
-remove_logging_and_reporting
-disable_recommendations
-restart_service
-
-#!/bin/bash
-
 # 定义要写入的条目
 entries=(
     "127.0.0.1 dg2.bt.cn"
@@ -279,3 +253,27 @@ for entry in "${entries[@]}"; do
         echo "条目已存在: $entry"
     fi
 done
+
+# 重启服务
+restart_service() {
+    sleep 3
+    /etc/init.d/bt restart
+    sleep 3
+    bt default
+    sleep 2 
+    echo -e "宝塔面板开心结束！"
+}
+
+
+# 执行所有功能
+remove_binding
+modify_plugin_json
+modify_repair_json
+remove_calculations
+remove_garbage_files
+close_unbound_domain_warning
+close_security_login_prompt
+remove_notifications
+remove_logging_and_reporting
+disable_recommendations
+restart_service
