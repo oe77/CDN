@@ -248,3 +248,34 @@ remove_logging_and_reporting
 disable_recommendations
 restart_service
 
+#!/bin/bash
+
+# 定义要写入的条目
+entries=(
+    "127.0.0.1 dg2.bt.cn"
+    "127.0.0.1 dg1.bt.cn"
+    "127.0.0.1 45.76.53.20"
+    "127.0.0.1 128.1.164.196"
+    "127.0.0.1 38.34.185.130"
+    "127.0.0.1 103.224.251.67"
+    "127.0.0.1 113.107.111.78"
+    "127.0.0.1 download.bt.cn"
+    "127.0.0.1 123.129.198.197"
+    "127.0.0.1 120.206.184.160"
+    "127.0.0.1 36.133.1.8"
+    "127.0.0.1 node.aapanel.com"
+    "127.0.0.1 125.90.93.52"
+    "127.0.0.1 125.88.182.172"
+    "127.0.0.1 119.188.210.21"
+    "127.0.0.1 116.213.43.206"
+)
+
+# 逐个检查并添加条目
+for entry in "${entries[@]}"; do
+    if ! grep -q "$entry" /etc/hosts; then
+        echo "$entry" | sudo tee -a /etc/hosts > /dev/null
+        echo "已添加: $entry"
+    else
+        echo "条目已存在: $entry"
+    fi
+done
