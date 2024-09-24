@@ -48,13 +48,13 @@ sleep 3
 plugin_file="/www/server/panel/data/plugin.json"
 if [ -f ${plugin_file} ];then
     chattr -i /www/server/panel/data/plugin.json
-    rm /www/server/panel/data/plugin.json
+    rm -rf /www/server/panel/data/plugin.json
     cd /www/server/panel/data
-    wget https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/plugin.json
+    curl -sSO https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/plugin.json
     chattr +i /www/server/panel/data/plugin.json
 else
     cd /www/server/panel/data
-    wget https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/plugin.json
+    curl -sSO https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/plugin.json
     chattr +i /www/server/panel/data/plugin.json
 fi
 echo "plugin.json修改完成."
@@ -65,13 +65,13 @@ sleep 3
 repair_file="/www/server/panel/data/repair.json"
 if [ -f ${repair_file} ];then
     chattr -i /www/server/panel/data/repair.json
-    rm /www/server/panel/data/repair.json
+    rm -rf /www/server/panel/data/repair.json
     cd /www/server/panel/data
-    wget https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/repair.json
+    curl -sSO https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/repair.json
     chattr +i /www/server/panel/data/repair.json
 else
     cd /www/server/panel/data
-    wget https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/repair.json
+    curl -sSO https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/repair.json
     chattr +i /www/server/panel/data/repair.json
 fi
 echo "文件防修改完成."
