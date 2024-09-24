@@ -71,24 +71,32 @@ sleep 3
 # 修改plugin.json
 modify_plugin_json() {
     local plugin_file="/www/server/panel/data/plugin.json"
-    chattr -i "$plugin_file" 2>/dev/null
-    rm -rf "$plugin_file"
+    
+    if [ -f "$plugin_file" ]; then
+        chattr -i "$plugin_file" 2>/dev/null
+        rm -rf "$plugin_file"
+    fi
+    
     curl -sSO https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/plugin.json -o "$plugin_file"
     chattr +i "$plugin_file"
     echo "plugin.json修改完成."
     sleep 3
 }
 
-# 防修改repair.json
 modify_repair_json() {
     local repair_file="/www/server/panel/data/repair.json"
-    chattr -i "$repair_file" 2>/dev/null
-    rm -rf "$repair_file"
+    
+    if [ -f "$repair_file" ]; then
+        chattr -i "$repair_file" 2>/dev/null
+        rm -rf "$repair_file"
+    fi
+    
     curl -sSO https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/repair.json -o "$repair_file"
     chattr +i "$repair_file"
-    echo "文件防修改完成."
+    echo "repair.json修改完成."
     sleep 3
 }
+
 
 # 去除计算题与延时等待
 remove_calculations() {
