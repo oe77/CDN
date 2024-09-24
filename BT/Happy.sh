@@ -77,9 +77,14 @@ modify_plugin_json() {
         rm -rf "$plugin_file"
     fi
     
-    curl -sSO https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/plugin.json -o "$plugin_file"
-    chattr +i "$plugin_file"
-    echo "plugin.json修改完成."
+    curl -s -o "$plugin_file" https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/plugin.json
+    
+    if [ -f "$plugin_file" ]; then
+        chattr +i "$plugin_file"
+        echo "plugin.json修改完成."
+    else
+        echo "下载plugin.json失败，请检查网络或URL."
+    fi
     sleep 3
 }
 
@@ -91,11 +96,17 @@ modify_repair_json() {
         rm -rf "$repair_file"
     fi
     
-    curl -sSO https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/repair.json -o "$repair_file"
-    chattr +i "$repair_file"
-    echo "repair.json修改完成."
+    curl -s -o "$repair_file" https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/repair.json
+    
+    if [ -f "$repair_file" ]; then
+        chattr +i "$repair_file"
+        echo "repair.json修改完成."
+    else
+        echo "下载repair.json失败，请检查网络或URL."
+    fi
     sleep 3
 }
+
 
 
 # 去除计算题与延时等待
