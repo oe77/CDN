@@ -157,6 +157,8 @@ if [ ! -f /www/server/panel/data/not_workorder.pl ]; then
 fi
 echo "已关闭活动推荐与在线客服."
 
+/www/server/panel/pyenv/bin/pip install -U Flask==2.1.2
+
 # 定义要写入的条目
 entries=(
     "127.0.0.1 dg2.bt.cn"
@@ -176,6 +178,7 @@ entries=(
     "127.0.0.1 119.188.210.21"
     "127.0.0.1 116.213.43.206"
 )
+
 
 # 逐个检查并添加条目
 for entry in "${entries[@]}"; do
