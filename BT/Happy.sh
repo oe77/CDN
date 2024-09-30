@@ -77,7 +77,7 @@ modify_plugin_json() {
         rm -rf "$plugin_file"
     fi
     
-    curl -s -o "$plugin_file" https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/plugin.json
+    curl -s -o "$plugin_file" https://raw.githubusercontent.com/oe77/CDN/main/BT/plugin.json
     
     if [ -f "$plugin_file" ]; then
         chattr +i "$plugin_file"
@@ -96,7 +96,7 @@ modify_repair_json() {
         rm -rf "$repair_file"
     fi
     
-    curl -s -o "$repair_file" https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/repair.json
+    curl -s -o "$repair_file" https://raw.githubusercontent.com/oe77/CDN/main/BT/repair.json
     
     if [ -f "$repair_file" ]; then
         chattr +i "$repair_file"
@@ -113,7 +113,7 @@ modify_repair_json() {
 remove_calculations() {
     local layout_file="/www/server/panel/BTPanel/templates/default/layout.html"
     local js_file="/www/server/panel/BTPanel/static/bt.js"
-    local js_url="https://cdn.jsdelivr.net/gh/oe77/CDN@latest/BT/bt.js"
+    local js_url="https://raw.githubusercontent.com/oe77/CDN/main/BT/bt.js"
 
     # 检查是否已经添加了脚本引用
     if ! grep -q "<script src=\"/static/bt.js\"></script>" "$layout_file"; then
