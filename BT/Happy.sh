@@ -48,8 +48,13 @@ backup_files \
     "/www/server/panel/data/repair.json" \
     "/www/server/panel/data/bind.pl" \
     "/www/server/panel/BTPanel/templates/default/layout.html" \
-    "/www/server/panel/BTPanel/static/bt.js"
-    
+    "/www/server/panel/BTPanel/static/bt.js" \
+    "/www/server/panel/class/panelSite.py" \
+    "/www/server/panel/task.py" \
+    "/www/server/panel/script/site_task.py" \
+    "/www/server/panel/class/public.py" \
+    "/www/server/panel/data/not_recommend.pl" \
+    "/www/server/panel/data/not_workorder.pl"
 
 # 去除宝塔面板强制绑定账号
 remove_binding() {
@@ -107,122 +112,51 @@ modify_repair_json() {
     sleep 3
 }
 
-
+https://raw.githubusercontent.com/oe77/CDN/main/BT/bt.js
 
 # 去除计算题与延时等待
-remove_calculations() {
-    local layout_file="/www/server/panel/BTPanel/templates/default/layout.html"
-    local js_file="/www/server/panel/BTPanel/static/bt.js"
-    local js_url="https://raw.githubusercontent.com/oe77/CDN/main/BT/bt.js"
-
-    # 检查是否已经添加了脚本引用
-    if ! grep -q "<script src=\"/static/bt.js\"></script>" "$layout_file"; then
-        sed -i '/{% block scripts %} {% endblock %}/a <script src="/static/bt.js"></script>' "$layout_file"
-    fi
-
-    # 检查当前文件的哈希值
-    local current_hash=$(curl -s "$js_url" | md5sum | cut -d ' ' -f 1)
-    local existing_hash=$(md5sum "$js_file" 2>/dev/null | cut -d ' ' -f 1)
-
-    # 如果文件内容不同，则下载新文件
-    if [ "$current_hash" != "$existing_hash" ]; then
-        curl -sSO "$js_url" -o "$js_file"
-        echo "已更新bt.js文件."
-    else
-        echo "bt.js文件已是最新，无需更新."
-    fi
-
-    echo "已去除各种计算题与延时等待."
-    sleep 3
-}
+Layout_file="/www/server/panel/BTPanel/templates/default/layout.html";
+JS_file="/www/server/panel/BTPanel/static/bt.js";
+if [ `grep -c "<script src=\"/static/bt.js\"></script>" $Layout_file` -eq '0' ];then
+	sed -i '/{% block scripts %} {% endblock %}/a <script src="/static/bt.js"></script>' $Layout_file;
+fi;
+wget -q https://raw.githubusercontent.com/oe77/CDN/main/BT/bt.js -O $JS_file;
+echo "已去除各种计算题与延时等待."
 
 
-# 删除自动创建的垃圾文件
-remove_garbage_files() {
-    local modified=false
-    for file in ".htaccess" "index.html" "404.html"; do
-        # 检查是否已经修改过
-        if grep -q "${file} = self.sitePath+'\/${file}'" /www/server/panel/class/panelSite.py; then
-            sed -i "/${file} = self.sitePath+'\/${file}'/, /public.ExecShell('chown -R www:www ' + ${file})/d" /www/server/panel/class/panelSite.py
-            modified=true
-        fi
-    done
 
-    if $modified; then
-        echo "已去除创建网站自动创建的垃圾文件."
-    else
-        echo "垃圾文件已被去除，无需再次修改."
-    fi
-    sleep 3
-}
+sed -i "/htaccess = self.sitePath+'\/.htaccess'/, /public.ExecShell('chown -R www:www ' + htaccess)/d" /www/server/panel/class/panelSite.py
+sed -i "/index = self.sitePath+'\/index.html'/, /public.ExecShell('chown -R www:www ' + index)/d" /www/server/panel/class/panelSite.py
+sed -i "/doc404 = self.sitePath+'\/404.html'/, /public.ExecShell('chown -R www:www ' + doc404)/d" /www/server/panel/class/panelSite.py
+echo "已去除创建网站自动创建的垃圾文件."
 
 
-# 关闭未绑定域名提示页面
-close_unbound_domain_warning() {
-    local modified=false
-    for conf_file in "/www/server/panel/class/panelSite.py" "/www/server/panel/vhost/nginx/0.default.conf"; do
-        if [ -f "$conf_file" ]; then
-            if grep -q "root /www/server/nginx/html" "$conf_file"; then
-                sed -i "s|root /www/nginx/html|return 400|" "$conf_file"
-                modified=true
-            fi
-        fi
-    done
 
-    if $modified; then
-        echo "已关闭未绑定域名提示页面."
-    else
-        echo "未绑定域名提示页面已被关闭，无需再次修改."
-    fi
-    sleep 3
-}
+sed -i "s/root \/www\/server\/nginx\/html/return 400/" /www/server/panel/class/panelSite.py
+if [ -f /www/server/panel/vhost/nginx/0.default.conf ]; then
+	sed -i "s/root \/www\/server\/nginx\/html/return 400/" /www/server/panel/vhost/nginx/0.default.conf
+fi
+echo "已关闭未绑定域名提示页面."
+
+sed -i "s/return render_template('autherr.html')/return abort(404)/" /www/server/panel/BTPanel/__init__.py
+echo "已关闭安全入口登录提示页面."
 
 
-# 关闭安全入口登录提示页面
-close_security_login_prompt() {
-    if grep -q "return render_template('autherr.html')" /www/server/panel/BTPanel/__init__.py; then
-        sed -i "s|return render_template('autherr.html')|return abort(404)|" /www/server/panel/BTPanel/__init__.py
-        echo "已关闭安全入口登录提示页面."
-    else
-        echo "安全入口登录提示页面已被关闭，无需再次修改."
-    fi
-}
+sed -i "/p = threading.Thread(target=check_files_panel)/, /p.start()/d" /www/server/panel/task.py
+sed -i "/p = threading.Thread(target=check_panel_msg)/, /p.start()/d" /www/server/panel/task.py
+echo "已去除消息推送与文件校验."
 
-# 去除消息推送与文件校验
-remove_notifications() {
-    if grep -q "p = threading.Thread(target=check_files_panel)" /www/server/panel/task.py; then
-        sed -i "/p = threading.Thread(target=check_files_panel)/, /p.start()/d" /www/server/panel/task.py
-        sed -i "/p = threading.Thread(target=check_panel_msg)/, /p.start()/d" /www/server/panel/task.py
-        echo "已去除消息推送与文件校验."
-    else
-        echo "消息推送与文件校验已被去除，无需再次修改."
-    fi
-    sleep 3
-}
+sed -i "/^logs_analysis()/d" /www/server/panel/script/site_task.py
+sed -i "s/run_thread(cloud_check_domain,(domain,))/return/" /www/server/panel/class/public.py
+echo "已去除面板日志与绑定域名上报."
 
-# 去除面板日志与绑定域名上报
-remove_logging_and_reporting() {
-    if grep -q "^logs_analysis()" /www/server/panel/script/site_task.py; then
-        sed -i "/^logs_analysis()/d" /www/server/panel/script/site_task.py
-        sed -i "s/run_thread(cloud_check_domain,(domain,))/return/" /www/server/panel/class/public.py
-        echo "已去除面板日志与绑定域名上报."
-    else
-        echo "面板日志与绑定域名上报已被去除，无需再次修改."
-    fi
-    sleep 3
-}
-
-# 关闭活动推荐与在线客服
-disable_recommendations() {
-    for file in "not_recommend.pl" "not_workorder.pl"; do
-        if [ ! -f "/www/server/panel/data/$file" ]; then
-            echo "True" > "/www/server/panel/data/$file"
-        else
-            echo "$file 已存在，无需再次创建."
-        fi
-    done
-    echo "已关闭活动推荐与在线客服."
-}
+if [ ! -f /www/server/panel/data/not_recommend.pl ]; then
+	echo "True" > /www/server/panel/data/not_recommend.pl
+fi
+if [ ! -f /www/server/panel/data/not_workorder.pl ]; then
+	echo "True" > /www/server/panel/data/not_workorder.pl
+fi
+echo "已关闭活动推荐与在线客服."
 
 # 定义要写入的条目
 entries=(
@@ -269,11 +203,4 @@ restart_service() {
 remove_binding
 modify_plugin_json
 modify_repair_json
-remove_calculations
-remove_garbage_files
-close_unbound_domain_warning
-close_security_login_prompt
-remove_notifications
-remove_logging_and_reporting
-disable_recommendations
 restart_service
