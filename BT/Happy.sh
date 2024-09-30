@@ -112,7 +112,6 @@ modify_repair_json() {
     sleep 3
 }
 
-https://raw.githubusercontent.com/oe77/CDN/main/BT/bt.js
 
 # 去除计算题与延时等待
 Layout_file="/www/server/panel/BTPanel/templates/default/layout.html";
