@@ -53,10 +53,10 @@ backup_files \
 
 # 去除宝塔面板强制绑定账号
 remove_binding() {
-    if grep -q "bind_user == 'XXXX'" /www/server/panel/BTPanel/static/js/index.js; then
+    if grep -q "bind_user == 'REMOVED'" /www/server/panel/BTPanel/static/js/index.js; then
         echo "绑定账号已修改，跳过."
     else
-        sed -i "s|bind_user == 'True'|bind_user == 'XXXX'|" /www/server/panel/BTPanel/static/js/index.js
+        sed -i "s|bind_user == 'True'|bind_user == 'REMOVED'|" /www/server/panel/BTPanel/static/js/index.js
         echo "已去除宝塔面板强制绑定账号."
     fi
     sleep 3
